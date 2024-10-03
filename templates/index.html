@@ -1,0 +1,712 @@
+<html>
+
+<head>
+    <title>Flight Status Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: black;
+            color: white;
+        }
+
+        h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+
+        }
+
+        .title-image-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: -100px;
+        }
+
+        .flight-status,
+        .prediction {
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        #status {
+            margin-top: -45px;
+
+        }
+
+        #predict {
+            color: #9933ff;
+
+        }
+
+        .content-wrapper {
+            display: flex;
+            gap: 40px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .plane-image {
+            margin-top: 40px;
+
+        }
+
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 800px;
+            width: 100%;
+            background: black;
+            padding: 20px;
+            padding-right: 50px;
+            padding-left: 50px;
+            border-radius: 8px;
+            border: 2px solid #9933ff;
+        }
+
+        .form-group {
+            flex: 1 1 calc(50% - 20px);
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #f4f4f4;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #181818;
+            color: white;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #181818;
+            color: white;
+
+        }
+
+        select::-webkit-scrollbar {
+            height: 10px;
+            background-color: black;
+
+        }
+
+        select::-webkit-scrollbar-thumb {
+            border-radius: 20px;
+            background-color: #9747ff;
+
+        }
+
+
+        #day {
+            width: 49%;
+
+        }
+
+        input[type="submit"] {
+            width: 150px;
+            margin-top: 20px;
+            padding: 10px 15px;
+            border: none;
+            background-color: #9933ff;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: black;
+            outline: 2px solid #9933ff;
+        }
+
+        select,
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: 2px solid #9933ff;
+        }
+
+        .result-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .result-text {
+            margin-left: 100px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-wrapper">
+        <div class="title-image-wrapper">
+            <h1 class="title">
+                <div class="flight-status" id="status">Flight Status</div>
+                <div class="prediction" id="predict">Prediction.</div>
+            </h1>
+            <img class="plane-image" src="{{url_for('static', filename='image.png')}}" alt="plane" width="320px">
+        </div>
+        <form action='/predict' method='POST'>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="airline">Airline:</label>
+                    <select type="text" id="airline" name="airline">
+                        <option value="Air Wisconsin Airlines Corp">Air Wisconsin Airlines Corp</option>
+                        <option value="Alaska Airlines Inc.">Alaska Airlines Inc.</option>
+                        <option value="Allegiant Air">Allegiant Air</option>
+                        <option value="American Airlines Inc.">American Airlines Inc.</option>
+                        <option value="Capital Cargo International">Capital Cargo International</option>
+                        <option value="Comair Inc.">Comair Inc.</option>
+                        <option value="Commutair Aka Champlain Enterprises, Inc.">Commutair Aka Champlain Enterprises,
+                            Inc.</option>
+                        <option value="Delta Air Lines Inc.">Delta Air Lines Inc.</option>
+                        <option value="Endeavor Air Inc.">Endeavor Air Inc.</option>
+                        <option value="Envoy Air">Envoy Air</option>
+                        <option value="Frontier Airlines Inc.">Frontier Airlines Inc.</option>
+                        <option value="GoJet Airlines, LLC d/b/a United Express">GoJet Airlines, LLC d/b/a United
+                            Express</option>
+                        <option value="Hawaiian Airlines Inc.">Hawaiian Airlines Inc.</option>
+                        <option value="Horizon Air">Horizon Air</option>
+                        <option value="JetBlue Airways">JetBlue Airways</option>
+                        <option value="Mesa Airlines Inc.">Mesa Airlines Inc.</option>
+                        <option value="Republic Airlines">Republic Airlines</option>
+                        <option value="SkyWest Airlines Inc.">SkyWest Airlines Inc.</option>
+                        <option value="Southwest Airlines Co.">Southwest Airlines Co.</option>
+                        <option value="Spirit Air Lines">Spirit Air Lines</option>
+                        <option value="United Air Lines Inc.">United Air Lines Inc.</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="op_airline">Operating Airline:</label>
+                    <select type="text" id="op_airline" name="op_airline">
+                        <option value="9E">9E</option>
+                        <option value="AA">AA</option>
+                        <option value="AS">AS</option>
+                        <option value="B6">B6</option>
+                        <option value="C5">C5</option>
+                        <option value="DL">DL</option>
+                        <option value="F9">F9</option>
+                        <option value="G4">G4</option>
+                        <option value="G7">G7</option>
+                        <option value="HA">HA</option>
+                        <option value="MQ">MQ</option>
+                        <option value="NK">NK</option>
+                        <option value="OH">OH</option>
+                        <option value="OO">OO</option>
+                        <option value="PT">PT</option>
+                        <option value="QX">QX</option>
+                        <option value="UA">UA</option>
+                        <option value="WN">WN</option>
+                        <option value="YX">YX</option>
+                        <option value="ZW">ZW</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="CRSDepTime">CRS Departure Time :</label>
+                    <input type="text" id="CRSDepTime" name="CRSDepTime" placeholder="--hhmm--">
+                </div>
+                <div class="form-group">
+                    <label for="CRSArrTime">CRS Arrival Time :</label>
+                    <input type="text" id="CRSArrTime" name="CRSArrTime" placeholder="--hhmm--">
+                </div>
+                <div class="form-group">
+                    <label for="CRSElapsedTime">CRS Elapsed Time :</label>
+                    <input type="text" id="CRSElapsedTime" name="CRSElapsedTime" placeholder="--hhmm--">
+                </div>
+                <div class="form-group">
+                    <label for="arrTime">Arrival Time :</label>
+                    <input type="text" id="arrTime" name="arrTime" placeholder="--hhmm--">
+                </div>
+                <div class="form-group">
+                    <label for="origin">Origin:</label>
+                    <select type="text" id="origin" name="origin">
+                        <option value="ABE">ABE</option>
+                        <option value="ABQ">ABQ</option>
+                        <option value="ABY">ABY</option>
+                        <option value="ACK">ACK</option>
+                        <option value="ACT">ACT</option>
+                        <option value="ADK">ADK</option>
+                        <option value="ADQ">ADQ</option>
+                        <option value="AGS">AGS</option>
+                        <option value="ALB">ALB</option>
+                        <option value="ALW">ALW</option>
+                        <option value="AMA">AMA</option>
+                        <option value="ANC">ANC</option>
+                        <option value="AND">AND</option>
+                        <option value="AUS">AUS</option>
+                        <option value="ATL">ATL</option>
+                        <option value="AVL">AVL</option>
+                        <option value="AVP">AVP</option>
+                        <option value="BFL">BFL</option>
+                        <option value="BGR">BGR</option>
+                        <option value="BHM">BHM</option>
+                        <option value="BIL">BIL</option>
+                        <option value="BIS">BIS</option>
+                        <option value="BJI">BJI</option>
+                        <option value="BKG">BKG</option>
+                        <option value="BMI">BMI</option>
+                        <option value="BNA">BNA</option>
+                        <option value="BPT">BPT</option>
+                        <option value="BQK">BQK</option>
+                        <option value="BTV">BTV</option>
+                        <option value="BUF">BUF</option>
+                        <option value="BUR">BUR</option>
+                        <option value="BWI">BWI</option>
+                        <option value="BZN">BZN</option>
+                        <option value="CAK">CAK</option>
+                        <option value="CAE">CAE</option>
+                        <option value="CHA">CHA</option>
+                        <option value="CHO">CHO</option>
+                        <option value="CHS">CHS</option>
+                        <option value="CLE">CLE</option>
+                        <option value="CLT">CLT</option>
+                        <option value="CMH">CMH</option>
+                        <option value="CMI">CMI</option>
+                        <option value="CNY">CNY</option>
+                        <option value="COU">COU</option>
+                        <option value="CRP">CRP</option>
+                        <option value="CRW">CRW</option>
+                        <option value="CSG">CSG</option>
+                        <option value="CVG">CVG</option>
+                        <option value="DAB">DAB</option>
+                        <option value="DAL">DAL</option>
+                        <option value="DAY">DAY</option>
+                        <option value="DBQ">DBQ</option>
+                        <option value="DCA">DCA</option>
+                        <option value="DDC">DDC</option>
+                        <option value="DEN">DEN</option>
+                        <option value="DFW">DFW</option>
+                        <option value="DLG">DLG</option>
+                        <option value="DLH">DLH</option>
+                        <option value="DRO">DRO</option>
+                        <option value="DSM">DSM</option>
+                        <option value="DUL">DUL</option>
+                        <option value="EAP">EAP</option>
+                        <option value="ECP">ECP</option>
+                        <option value="EGE">EGE</option>
+                        <option value="EKO">EKO</option>
+                        <option value="ELM">ELM</option>
+                        <option value="ELP">ELP</option>
+                        <option value="ESC">ESC</option>
+                        <option value="EUG">EUG</option>
+                        <option value="EVV">EVV</option>
+                        <option value="FAI">FAI</option>
+                        <option value="FAR">FAR</option>
+                        <option value="FAY">FAY</option>
+                        <option value="FAT">FAT</option>
+                        <option value="FAY">FAY</option>
+                        <option value="FSD">FSD</option>
+                        <option value="FLG">FLG</option>
+                        <option value="FLL">FLL</option>
+                        <option value="FNT">FNT</option>
+                        <option value="FWA">FWA</option>
+                        <option value="GCK">GCK</option>
+                        <option value="GDD">GDD</option>
+                        <option value="GEG">GEG</option>
+                        <option value="GFK">GFK</option>
+                        <option value="GJT">GJT</option>
+                        <option value="GNV">GNV</option>
+                        <option value="GSO">GSO</option>
+                        <option value="GRB">GRB</option>
+                        <option value="GRI">GRI</option>
+                        <option value="GRK">GRK</option>
+                        <option value="GTR">GTR</option>
+                        <option value="GUC">GUC</option>
+                        <option value="HGR">HGR</option>
+                        <option value="HNL">HNL</option>
+                        <option value="HOB">HOB</option>
+                        <option value="HSV">HSV</option>
+                        <option value="IAD">IAD</option>
+                        <option value="IDA">IDA</option>
+                        <option value="ILG">ILG</option>
+                        <option value="ILM">ILM</option>
+                        <option value="IND">IND</option>
+                        <option value="ISP">ISP</option>
+                        <option value="ITA">ITA</option>
+                        <option value="ITO">ITO</option>
+                        <option value="JAC">JAC</option>
+                        <option value="JAN">JAN</option>
+                        <option value="JAX">JAX</option>
+                        <option value="JFK">JFK</option>
+                        <option value="JNU">JNU</option>
+                        <option value="KCA">KCA</option>
+                        <option value="KTN">KTN</option>
+                        <option value="LAN">LAN</option>
+                        <option value="LAX">LAX</option>
+                        <option value="LBB">LBB</option>
+                        <option value="LBE">LBE</option>
+                        <option value="LCH">LCH</option>
+                        <option value="LGB">LGB</option>
+                        <option value="LIT">LIT</option>
+                        <option value="LNK">LNK</option>
+                        <option value="LSE">LSE</option>
+                        <option value="LWS">LWS</option>
+                        <option value="LYH">LYH</option>
+                        <option value="MAF">MAF</option>
+                        <option value="MBS">MBS</option>
+                        <option value="MCI">MCI</option>
+                        <option value="MCO">MCO</option>
+                        <option value="MEM">MEM</option>
+                        <option value="MFE">MFE</option>
+                        <option value="MFR">MFR</option>
+                        <option value="MHK">MHK</option>
+                        <option value="MIA">MIA</option>
+                        <option value="MIL">MIL</option>
+                        <option value="MLB">MLB</option>
+                        <option value="MLI">MLI</option>
+                        <option value="MLU">MLU</option>
+                        <option value="MOT">MOT</option>
+                        <option value="MQT">MQT</option>
+                        <option value="MSN">MSN</option>
+                        <option value="MSP">MSP</option>
+                        <option value="MSY">MSY</option>
+                        <option value="MTJ">MTJ</option>
+                        <option value="MRY">MRY</option>
+                        <option value="MYR">MYR</option>
+                        <option value="OAJ">OAJ</option>
+                        <option value="OAK">OAK</option>
+                        <option value="OGD">OGD</option>
+                        <option value="OGS">OGS</option>
+                        <option value="OME">OME</option>
+                        <option value="ONT">ONT</option>
+                        <option value="ORD">ORD</option>
+                        <option value="ORF">ORF</option>
+                        <option value="OTZ">OTZ</option>
+                        <option value="OWB">OWB</option>
+                        <option value="PBI">PBI</option>
+                        <option value="PDX">PDX</option>
+                        <option value="PEE">PEE</option>
+                        <option value="PHF">PHF</option>
+                        <option value="PHL">PHL</option>
+                        <option value="PIA">PIA</option>
+                        <option value="PIB">PIB</option>
+                        <option value="PIE">PIE</option>
+                        <option value="PIT">PIT</option>
+                        <option value="PLN">PLN</option>
+                        <option value="PMV">PMV</option>
+                        <option value="PNR">PNR</option>
+                        <option value="PNS">PNS</option>
+                        <option value="PPP">PPP</option>
+                        <option value="PRC">PRC</option>
+                        <option value="PQI">PQI</option>
+                        <option value="RAP">RAP</option>
+                        <option value="RDU">RDU</option>
+                        <option value="RIC">RIC</option>
+                        <option value="RHI">RHI</option>
+                        <option value="ROC">ROC</option>
+                        <option value="ROW">ROW</option>
+                        <option value="RST">RST</option>
+                        <option value="RSW">RSW</option>
+                        <option value="SAB">SAB</option>
+                        <option value="SBA">SBA</option>
+                        <option value="SBF">SBF</option>
+                        <option value="SBN">SBN</option>
+                        <option value="SGF">SGF</option>
+                        <option value="SGU">SGU</option>
+                        <option value="SHD">SHD</option>
+                        <option value="SHV">SHV</option>
+                        <option value="SIT">SIT</option>
+                        <option value="SJC">SJC</option>
+                        <option value="SJU">SJU</option>
+                        <option value="SLC">SLC</option>
+                        <option value="SMF">SMF</option>
+                        <option value="SNA">SNA</option>
+                        <option value="SPS">SPS</option>
+                        <option value="SRQ">SRQ</option>
+                        <option value="STL">STL</option>
+                        <option value="SUN">SUN</option>
+                        <option value="SWF">SWF</option>
+                        <option value="SYR">SYR</option>
+                        <option value="TLH">TLH</option>
+                        <option value="TOL">TOL</option>
+                        <option value="TPA">TPA</option>
+                        <option value="TRI">TRI</option>
+                        <option value="TUS">TUS</option>
+                        <option value="TVC">TVC</option>
+                        <option value="TYS">TYS</option>
+                        <option value="VCT">VCT</option>
+                        <option value="VLD">VLD</option>
+                        <option value="VPS">VPS</option>
+                        <option value="WAL">WAL</option>
+                        <option value="WAS">WAS</option>
+                        <option value="WIL">WIL</option>
+                        <option value="WLR">WLR</option>
+                        <option value="WRL">WRL</option>
+                        <option value="WYS">WYS</option>
+                        <option value="XNA">XNA</option>
+                        <option value="YAK">YAK</option>
+                        <option value="YKM">YKM</option>
+                        <option value="YNG">YNG</option>
+                        <option value="YUM">YUM</option>
+                        <option value="ZAN">ZAN</option>
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dest">Destination:</label>
+                    <select type="text" id="dest" name="dest">
+                        <option value="ABE">ABE</option>
+                        <option value="ABQ">ABQ</option>
+                        <option value="ABY">ABY</option>
+                        <option value="ACK">ACK</option>
+                        <option value="ACT">ACT</option>
+                        <option value="ADK">ADK</option>
+                        <option value="ADQ">ADQ</option>
+                        <option value="AGS">AGS</option>
+                        <option value="ALB">ALB</option>
+                        <option value="ALW">ALW</option>
+                        <option value="AMA">AMA</option>
+                        <option value="ANC">ANC</option>
+                        <option value="AND">AND</option>
+                        <option value="AUS">AUS</option>
+                        <option value="ATL">ATL</option>
+                        <option value="AVL">AVL</option>
+                        <option value="AVP">AVP</option>
+                        <option value="BFL">BFL</option>
+                        <option value="BGR">BGR</option>
+                        <option value="BHM">BHM</option>
+                        <option value="BIL">BIL</option>
+                        <option value="BIS">BIS</option>
+                        <option value="BJI">BJI</option>
+                        <option value="BKG">BKG</option>
+                        <option value="BMI">BMI</option>
+                        <option value="BNA">BNA</option>
+                        <option value="BPT">BPT</option>
+                        <option value="BQK">BQK</option>
+                        <option value="BTV">BTV</option>
+                        <option value="BUF">BUF</option>
+                        <option value="BUR">BUR</option>
+                        <option value="BWI">BWI</option>
+                        <option value="BZN">BZN</option>
+                        <option value="CAK">CAK</option>
+                        <option value="CAE">CAE</option>
+                        <option value="CHA">CHA</option>
+                        <option value="CHO">CHO</option>
+                        <option value="CHS">CHS</option>
+                        <option value="CLE">CLE</option>
+                        <option value="CLT">CLT</option>
+                        <option value="CMH">CMH</option>
+                        <option value="CMI">CMI</option>
+                        <option value="CNY">CNY</option>
+                        <option value="COU">COU</option>
+                        <option value="CRP">CRP</option>
+                        <option value="CRW">CRW</option>
+                        <option value="CSG">CSG</option>
+                        <option value="CVG">CVG</option>
+                        <option value="DAB">DAB</option>
+                        <option value="DAL">DAL</option>
+                        <option value="DAY">DAY</option>
+                        <option value="DBQ">DBQ</option>
+                        <option value="DCA">DCA</option>
+                        <option value="DDC">DDC</option>
+                        <option value="DEN">DEN</option>
+                        <option value="DFW">DFW</option>
+                        <option value="DLG">DLG</option>
+                        <option value="DLH">DLH</option>
+                        <option value="DRO">DRO</option>
+                        <option value="DSM">DSM</option>
+                        <option value="DUL">DUL</option>
+                        <option value="EAP">EAP</option>
+                        <option value="ECP">ECP</option>
+                        <option value="EGE">EGE</option>
+                        <option value="EKO">EKO</option>
+                        <option value="ELM">ELM</option>
+                        <option value="ELP">ELP</option>
+                        <option value="ESC">ESC</option>
+                        <option value="EUG">EUG</option>
+                        <option value="EVV">EVV</option>
+                        <option value="FAI">FAI</option>
+                        <option value="FAR">FAR</option>
+                        <option value="FAY">FAY</option>
+                        <option value="FAT">FAT</option>
+                        <option value="FAY">FAY</option>
+                        <option value="FSD">FSD</option>
+                        <option value="FLG">FLG</option>
+                        <option value="FLL">FLL</option>
+                        <option value="FNT">FNT</option>
+                        <option value="FWA">FWA</option>
+                        <option value="GCK">GCK</option>
+                        <option value="GDD">GDD</option>
+                        <option value="GEG">GEG</option>
+                        <option value="GFK">GFK</option>
+                        <option value="GJT">GJT</option>
+                        <option value="GNV">GNV</option>
+                        <option value="GSO">GSO</option>
+                        <option value="GRB">GRB</option>
+                        <option value="GRI">GRI</option>
+                        <option value="GRK">GRK</option>
+                        <option value="GTR">GTR</option>
+                        <option value="GUC">GUC</option>
+                        <option value="HGR">HGR</option>
+                        <option value="HNL">HNL</option>
+                        <option value="HOB">HOB</option>
+                        <option value="HSV">HSV</option>
+                        <option value="IAD">IAD</option>
+                        <option value="IDA">IDA</option>
+                        <option value="ILG">ILG</option>
+                        <option value="ILM">ILM</option>
+                        <option value="IND">IND</option>
+                        <option value="ISP">ISP</option>
+                        <option value="ITA">ITA</option>
+                        <option value="ITO">ITO</option>
+                        <option value="JAC">JAC</option>
+                        <option value="JAN">JAN</option>
+                        <option value="JAX">JAX</option>
+                        <option value="JFK">JFK</option>
+                        <option value="JNU">JNU</option>
+                        <option value="KCA">KCA</option>
+                        <option value="KTN">KTN</option>
+                        <option value="LAN">LAN</option>
+                        <option value="LAX">LAX</option>
+                        <option value="LBB">LBB</option>
+                        <option value="LBE">LBE</option>
+                        <option value="LCH">LCH</option>
+                        <option value="LGB">LGB</option>
+                        <option value="LIT">LIT</option>
+                        <option value="LNK">LNK</option>
+                        <option value="LSE">LSE</option>
+                        <option value="LWS">LWS</option>
+                        <option value="LYH">LYH</option>
+                        <option value="MAF">MAF</option>
+                        <option value="MBS">MBS</option>
+                        <option value="MCI">MCI</option>
+                        <option value="MCO">MCO</option>
+                        <option value="MEM">MEM</option>
+                        <option value="MFE">MFE</option>
+                        <option value="MFR">MFR</option>
+                        <option value="MHK">MHK</option>
+                        <option value="MIA">MIA</option>
+                        <option value="MIL">MIL</option>
+                        <option value="MLB">MLB</option>
+                        <option value="MLI">MLI</option>
+                        <option value="MLU">MLU</option>
+                        <option value="MOT">MOT</option>
+                        <option value="MQT">MQT</option>
+                        <option value="MSN">MSN</option>
+                        <option value="MSP">MSP</option>
+                        <option value="MSY">MSY</option>
+                        <option value="MTJ">MTJ</option>
+                        <option value="MRY">MRY</option>
+                        <option value="MYR">MYR</option>
+                        <option value="OAJ">OAJ</option>
+                        <option value="OAK">OAK</option>
+                        <option value="OGD">OGD</option>
+                        <option value="OGS">OGS</option>
+                        <option value="OME">OME</option>
+                        <option value="ONT">ONT</option>
+                        <option value="ORD">ORD</option>
+                        <option value="ORF">ORF</option>
+                        <option value="OTZ">OTZ</option>
+                        <option value="OWB">OWB</option>
+                        <option value="PBI">PBI</option>
+                        <option value="PDX">PDX</option>
+                        <option value="PEE">PEE</option>
+                        <option value="PHF">PHF</option>
+                        <option value="PHL">PHL</option>
+                        <option value="PIA">PIA</option>
+                        <option value="PIB">PIB</option>
+                        <option value="PIE">PIE</option>
+                        <option value="PIT">PIT</option>
+                        <option value="PLN">PLN</option>
+                        <option value="PMV">PMV</option>
+                        <option value="PNR">PNR</option>
+                        <option value="PNS">PNS</option>
+                        <option value="PPP">PPP</option>
+                        <option value="PRC">PRC</option>
+                        <option value="PQI">PQI</option>
+                        <option value="RAP">RAP</option>
+                        <option value="RDU">RDU</option>
+                        <option value="RIC">RIC</option>
+                        <option value="RHI">RHI</option>
+                        <option value="ROC">ROC</option>
+                        <option value="ROW">ROW</option>
+                        <option value="RST">RST</option>
+                        <option value="RSW">RSW</option>
+                        <option value="SAB">SAB</option>
+                        <option value="SBA">SBA</option>
+                        <option value="SBF">SBF</option>
+                        <option value="SBN">SBN</option>
+                        <option value="SGF">SGF</option>
+                        <option value="SGU">SGU</option>
+                        <option value="SHD">SHD</option>
+                        <option value="SHV">SHV</option>
+                        <option value="SIT">SIT</option>
+                        <option value="SJC">SJC</option>
+                        <option value="SJU">SJU</option>
+                        <option value="SLC">SLC</option>
+                        <option value="SMF">SMF</option>
+                        <option value="SNA">SNA</option>
+                        <option value="SPS">SPS</option>
+                        <option value="SRQ">SRQ</option>
+                        <option value="STL">STL</option>
+                        <option value="SUN">SUN</option>
+                        <option value="SWF">SWF</option>
+                        <option value="SYR">SYR</option>
+                        <option value="TLH">TLH</option>
+                        <option value="TOL">TOL</option>
+                        <option value="TPA">TPA</option>
+                        <option value="TRI">TRI</option>
+                        <option value="TUS">TUS</option>
+                        <option value="TVC">TVC</option>
+                        <option value="TYS">TYS</option>
+                        <option value="VCT">VCT</option>
+                        <option value="VLD">VLD</option>
+                        <option value="VPS">VPS</option>
+                        <option value="WAL">WAL</option>
+                        <option value="WAS">WAS</option>
+                        <option value="WIL">WIL</option>
+                        <option value="WLR">WLR</option>
+                        <option value="WRL">WRL</option>
+                        <option value="WYS">WYS</option>
+                        <option value="XNA">XNA</option>
+                        <option value="YAK">YAK</option>
+                        <option value="YKM">YKM</option>
+                        <option value="YNG">YNG</option>
+                        <option value="YUM">YUM</option>
+                        <option value="ZAN">ZAN</option>
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="month">Month:</label>
+                    <input type="number" id="month" name="month" min="1" max="12">
+                </div>
+                <div class="form-group">
+                    <label for="dayOfWeek"> Week:</label>
+                    <input type="number" id="dayOfWeek" name="dayOfWeek" min="1" max="7">
+                </div>
+                <div class="form-group">
+                    <label for="day">Day:</label>
+                    <input type="number" id="day" name="day" min="1" max="31">
+                </div>
+            </div>
+            <div class="result-container">
+                <input type="submit" value="Predict">
+                <div class="result-text">Prediction : {{result}}</div>
+            </div>
+        </form>
+</body>
+
+</html>
