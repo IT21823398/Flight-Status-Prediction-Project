@@ -20,6 +20,10 @@ jedi==0.17.2
 Jinja2==3.1.4
 joblib==1.4.2
 Js2Py==0.71
+kivy-deps.angle==0.4.0
+kivy-deps.glew==0.3.0
+kivy-deps.gstreamer==0.3.2
+kivy-deps.sdl2==0.4.3
 lazy-object-proxy==1.6.0
 MarkupSafe==2.1.5
 mccabe==0.6.1
@@ -69,4 +73,3 @@ virtualenv-clone==0.5.7
 Werkzeug==3.0.4
 wrapt==1.13.3
 yapf==0.31.0
-gunicorn
